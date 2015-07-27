@@ -1,0 +1,16 @@
+{
+    "name": "maxxer/redmine2gitlab",
+    "description": "Redmine to GitLab issues importer",
+    "require": {
+        "kbsali/redmine-api": "~1.0",
+        "m4tthumphrey/php-gitlab-api": "dev-master",
+        "ryakad/pandoc-php": "~1.0"
+    },
+    "license": "GPLv3",
+    "authors": [
+        {
+            "name": "Lorenzo Milesi",
+            "email": "maxxer@yetopen.it"
+        }
+    ]
+}
