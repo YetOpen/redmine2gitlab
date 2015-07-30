@@ -18,6 +18,17 @@ Installation
 First run `composer update` to install PHP deps. Then copy `config-sample.php` to `config.php` and adjust it
 to fit your environment.
 
+Running
+-------
+
+Create a file called `projects.txt` in the same path as the file. The file will contain association of Redmine projects and Gitlab ones.
+For example
+
+    remine-project:namespace/gitlab-project
+
+Then run:
+
+`php import.php`
 
 
 Limitations

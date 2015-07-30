@@ -3,7 +3,12 @@ require_once 'vendor/autoload.php';
 
 $rm2gl = new Redmine2Gitlab();
 // Source Redmine identifier - Destination GitLab identifier with namespace (group)
-$rm2gl->import("hotspot-server-v2", "lorenzo.milesi/import-test");
+
+$list = file("projects.txt");
+foreach ($list as $proj) {
+    list($rmid, $glid) = explode(":", trim($proj));
+    $rm2gl->import($rmid, $glid);
+}
 
 class Redmine2Gitlab
 {
@@ -69,7 +74,12 @@ class Redmine2Gitlab
     {
         if (!array_key_exists($id, $this->rm_user_cache)) {
             $rmus = $this->rm_client->api('user')->show($id);
-            $this->rm_user_cache[$id] = $rmus['user'];
+            if (!empty($rmus['user'])) {
+                $this->rm_user_cache[$id] = $rmus['user'];
+            } else {
+                // redmine user not existing anymore
+                $this->rm_user_cache[$id] = array('email' => '');
+            }
         }
         return $this->rm_user_cache[$id];
     }
@@ -92,6 +102,8 @@ class Redmine2Gitlab
      */
     public function import($rm_project_identifier, $gl_project_identifier)
     {
+        echo "Importing issues for Redmine project {$rm_project_identifier} to GitLab's {$gl_project_identifier} \n";
+
         $gl_project = new \Gitlab\Model\Project($gl_project_identifier, $this->gl_client);
         foreach ($this->priority_label as $l) {
             try {
@@ -108,6 +120,7 @@ class Redmine2Gitlab
         foreach ($project_issues['issues'] as $issue) {
             $this->importIssue($issue['id'], $gl_project);
         }
+        echo "Import finished!\n\n";
     }
 
     /**
